@@ -8,6 +8,8 @@
 
 #include <vector>
 #include <cmath>
+#include <cstdint>
+#include <climits>
 
 /**
  *  A point is represented by two integer coordinates.
@@ -39,7 +41,10 @@ struct Rectangle {
 /**
  *  The empty rectangle has vertices (+inf, +inf, -inf, -inf).
  */
-#define EMPTY_RECT (Rectangle{INT_MAX, INT_MAX, INT_MIN, INT_MIN})
+static inline Rectangle empty_rect() {
+  return Rectangle{INT_MAX, INT_MAX, INT_MIN, INT_MIN};
+}
+#define EMPTY_RECT empty_rect()
 
 /**
  *  Returns true if and only if the given point is inside the given rectangle.

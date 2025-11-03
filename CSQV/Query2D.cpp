@@ -3,6 +3,7 @@
  *  @author Modified for 2D Range Query System
  */
 
+#include "Geometry.hpp"
 #include "Query2D.hpp"
 #include "csv.hpp"
 #include <chrono>
@@ -41,7 +42,7 @@ size_t count_points_2d(VObject2D *vo) {
 /**
  *  Performs a 2D range query on the MR-tree.
  */
-VObject2D *range_query_2d(Node2D *root, const Rectangle &query, 
+VObject2D *range_query_2d(Node2D *root, const struct Rectangle &query, 
                           QueryStats2D *stats) {
   if (!root) return nullptr;
   
@@ -55,7 +56,7 @@ VObject2D *range_query_2d(Node2D *root, const Rectangle &query,
   }
   
   // For internal nodes, check if MBR intersects with query
-  Rectangle node_rect = root->getRect();
+  struct Rectangle node_rect = root->getRect();
   if (!intersect(node_rect, query)) {
     // No intersection - prune this subtree
     if (stats) stats->nodes_pruned++;
@@ -77,7 +78,7 @@ VObject2D *range_query_2d(Node2D *root, const Rectangle &query,
 /**
  *  Verifies a 2D range query result.
  */
-VResult2D *verify_2d(VObject2D *vo, const Rectangle &query,
+VResult2D *verify_2d(VObject2D *vo, const struct Rectangle &query,
                      QueryStats2D *stats) {
   if (!vo) return nullptr;
   
@@ -89,7 +90,7 @@ VResult2D *verify_2d(VObject2D *vo, const Rectangle &query,
       
       // Filter points that match the query
       std::vector<Point2D> matching_points;
-      Rectangle leaf_mbr = EMPTY_RECT;
+      struct Rectangle leaf_mbr = EMPTY_RECT;
       Buffer buf(all_points.size() * (sizeof(uint32_t) + 2 * sizeof(int32_t)));
       
       for (const Point2D &p : all_points) {
@@ -117,7 +118,7 @@ VResult2D *verify_2d(VObject2D *vo, const Rectangle &query,
       // Reconstruct internal node
       VContainer2D *container = static_cast<VContainer2D*>(vo);
       std::vector<Point2D> all_matching_points;
-      Rectangle combined_mbr = EMPTY_RECT;
+      struct Rectangle combined_mbr = EMPTY_RECT;
       Buffer buf(container->size() * (4*sizeof(int32_t) + SHA256_DIGEST_LENGTH));
       
       for (size_t i = 0; i < container->size(); i++) {
@@ -129,7 +130,7 @@ VResult2D *verify_2d(VObject2D *vo, const Rectangle &query,
                                   child_points.begin(), child_points.end());
         
         // Update combined MBR and hash buffer
-        Rectangle child_rect = child_result->getRect();
+        struct Rectangle child_rect = child_result->getRect();
         hash_t child_hash = child_result->getHash();
         
         combined_mbr = enlarge(combined_mbr, child_rect);
@@ -152,7 +153,7 @@ VResult2D *verify_2d(VObject2D *vo, const Rectangle &query,
 /**
  *  Performs complete 2D range query with verification.
  */
-VResult2D *query_and_verify_2d(Node2D *root, const Rectangle &query,
+VResult2D *query_and_verify_2d(Node2D *root, const struct Rectangle &query,
                                QueryStats2D *stats) {
   if (stats) {
     stats->nodes_visited = 0;
@@ -218,8 +219,8 @@ void print_query_stats_2d(const QueryStats2D &stats) {
 /**
  *  Loads query rectangles from CSV file.
  */
-std::vector<Rectangle> load_queries_2d(const std::string &path) {
-  std::vector<Rectangle> queries;
+std::vector<struct Rectangle> load_queries_2d(const std::string &path) {
+  std::vector<struct Rectangle> queries;
   
   try {
     csv::CSVReader reader(path);
@@ -245,11 +246,11 @@ std::vector<Rectangle> load_queries_2d(const std::string &path) {
 /**
  *  Generates random query rectangles.
  */
-std::vector<Rectangle> generate_random_queries_2d(const Rectangle &mbr,
+std::vector<struct Rectangle> generate_random_queries_2d(const struct Rectangle &mbr,
                                                   size_t num_queries,
                                                   double min_size,
                                                   double max_size) {
-  std::vector<Rectangle> queries;
+  std::vector<struct Rectangle> queries;
   queries.reserve(num_queries);
   
   std::random_device rd;

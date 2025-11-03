@@ -13,6 +13,11 @@
 #include "Hash.hpp"
 #include "Buffer.hpp"
 
+// Morton encoding function declaration (forward declaration)
+#ifdef Z_INDEX
+uint_fast64_t morton2D_encode(int32_t x, int32_t y);
+#endif
+
 /**
  *  A simplified record containing only 2D coordinates and an ID.
  *  This is optimized for pure 2D range queries.
@@ -138,10 +143,5 @@ static inline Rectangle compute_mbr(const std::vector<Point2D> &points) {
   }
   return mbr;
 }
-
-// Morton encoding function declaration (to be implemented)
-#ifdef Z_INDEX
-uint_fast64_t morton2D_encode(int32_t x, int32_t y);
-#endif
 
 #endif

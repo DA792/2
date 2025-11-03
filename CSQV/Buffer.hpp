@@ -7,6 +7,7 @@
 #define BUFFER_H
 
 #include <vector>
+#include <cstdint>
 
 /**
  *  This class implements a buffer containing raw bytes.

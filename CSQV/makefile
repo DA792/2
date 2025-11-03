@@ -4,8 +4,8 @@
 #
 
 CXX=g++
-CXX_FLAGS= -std=c++17 -O2 -I/usr/local/opt/libressl/include -Ilibmorton
-LD_FLAGS= -L/usr/local/opt/libressl/lib -lcrypto
+CXX_FLAGS= -std=c++17 -O2 -IC:\msys64\mingw64\include -Ilibmorton
+LD_FLAGS= -LC:\msys64\mingw64\lib -lcrypto -lws2_32 -lcrypt32
 
 .PHONY: all clean
 
@@ -20,13 +20,13 @@ TARGETS=TestQuery QueryGen TestIndex
 
 # 2D Range Query System targets
 TestQuery: $(OBJECTS_2D) Test2DQuery.o
-	$(CXX) $(LD_FLAGS) $^ -o TestQuery
+	$(CXX) $^ $(LD_FLAGS) -o TestQuery
 
 QueryGen: $(OBJECTS_2D) QueryGen2D.o
-	$(CXX) $(LD_FLAGS) $^ -o QueryGen
+	$(CXX) $^ $(LD_FLAGS) -o QueryGen
 
 TestIndex: $(OBJECTS_2D) Test2DIndex.o
-	$(CXX) $(LD_FLAGS) $^ -o TestIndex
+	$(CXX) $^ $(LD_FLAGS) -o TestIndex
 
 # Build targets
 all: $(TARGETS)

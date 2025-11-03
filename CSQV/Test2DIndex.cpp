@@ -7,6 +7,7 @@
 
 #include "Point2D.hpp"
 #include "Node2D.hpp"
+#include "Query2D.hpp"
 #include <iostream>
 #include <chrono>
 #include <iomanip>
@@ -79,7 +80,7 @@ int main(int argc, char const *argv[]) {
   
   // Calculate additional statistics
   int leaves = count_2d_leaves(root);
-  int height = height_2d_tree(root);
+  int tree_height = height_2d_tree(root);
   double avg_points_per_leaf = (double)points.size() / leaves;
   double tree_utilization = avg_points_per_leaf / capacity;
   

@@ -26,25 +26,23 @@ uint_fast64_t morton2D_encode(int32_t x, int32_t y) {
 
 /**
  *  Parses a CSV file and creates a list of 2D points.
- *  Expected format: ID,Year,Month,Day,Time,x,y
- *  Only extracts ID, x, y columns for 2D range queries.
+ *  Expected format: x,y (simple 2-column format)
+ *  Generates sequential IDs for points.
  */
 std::vector<Point2D> load_points_file(const std::string &path) {
   std::vector<Point2D> points;
   
   try {
     csv::CSVReader reader(path);
+    uint32_t id = 0;
     
     for (csv::CSVRow& row : reader) {
-      // Extract ID, x, y columns (assuming they are at positions 0, 5, 6)
-      std::string id_str = row[0].get<std::string>();
-      int32_t x = row[5].get<int32_t>();
-      int32_t y = row[6].get<int32_t>();
+      // Extract x, y columns (positions 0, 1)
+      int32_t x = row[0].get<int32_t>();
+      int32_t y = row[1].get<int32_t>();
       
-      // Convert ID string to hash for unique identifier
-      uint32_t id = std::hash<std::string>{}(id_str) % UINT32_MAX;
-      
-      Point2D point(id, x, y);
+      // Use sequential ID
+      Point2D point(id++, x, y);
       points.push_back(point);
     }
     
