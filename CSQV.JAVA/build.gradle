@@ -1,0 +1,103 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.mrtree'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // No external dependencies - pure Java implementation
+    testImplementation 'junit:junit:4.13.2'
+}
+
+// Main class configurations for different executables
+application {
+    mainClass = 'com.mrtree.TestQuery2D'
+}
+
+// Create tasks for different main classes
+task runTestIndex(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mrtree.TestIndex2D'
+    description = 'Run tree construction test'
+}
+
+task runTestQuery(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mrtree.TestQuery2D'
+    description = 'Run query performance test'
+}
+
+task runQueryGen(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mrtree.QueryGenerator2D'
+    description = 'Run query generator'
+}
+
+// JAR configurations
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.mrtree.TestQuery2D',
+            'Implementation-Title': 'CSQV MR-tree Java Implementation',
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+// Create executable JARs for each main class
+task testIndexJar(type: Jar) {
+    archiveClassifier = 'testindex'
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'com.mrtree.TestIndex2D'
+    }
+}
+
+task testQueryJar(type: Jar) {
+    archiveClassifier = 'testquery'
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'com.mrtree.TestQuery2D'
+    }
+}
+
+task queryGenJar(type: Jar) {
+    archiveClassifier = 'querygen'
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'com.mrtree.QueryGenerator2D'
+    }
+}
+
+// Build all JARs
+task buildAllJars {
+    dependsOn jar, testIndexJar, testQueryJar, queryGenJar
+    description = 'Build all executable JARs'
+}
+
+// Test configuration
+test {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// Custom tasks for running with arguments
+task testWithData(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.mrtree.TestIndex2D'
+    args = ['data/crash_data_1000.csv', '128']
+    description = 'Test with sample data'
+}

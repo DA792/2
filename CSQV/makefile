@@ -13,7 +13,7 @@ LD_FLAGS= -LC:\msys64\mingw64\lib -lcrypto -lws2_32 -lcrypt32
 OBJECTS_2D=Buffer.o Hash.o Point2D.o Node2D.o Query2D.o
 
 # Target executables
-TARGETS=TestQuery QueryGen TestIndex
+TARGETS=TestQuery QueryGen TestIndex QueryGenMultiple
 
 %.o: %.cpp
 	$(CXX) $(CXX_FLAGS) -c $^
@@ -27,6 +27,9 @@ QueryGen: $(OBJECTS_2D) QueryGen2D.o
 
 TestIndex: $(OBJECTS_2D) Test2DIndex.o
 	$(CXX) $^ $(LD_FLAGS) -o TestIndex
+
+QueryGenMultiple: $(OBJECTS_2D) QueryGenMultiple.o
+	$(CXX) $^ $(LD_FLAGS) -o QueryGenMultiple
 
 # Build targets
 all: $(TARGETS)
